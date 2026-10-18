@@ -1,13 +1,19 @@
-// types/show.ts
-
 export interface Seat {
-  id: string;
-  row: string;
-  column: number;
+  code: string;
+  status: 'AVAILABLE' | 'HELD' | 'SOLD';
 }
 
 export interface ReserveRequest {
   showId: number;
-  seats: string[]; // 혹은 Seat[]로 바꾸고 싶으면 위와 통일
-  userId: number;
+  seats: string[];
+  queueTicket: string;
+}
+
+export interface Reservation {
+  id: number;
+  showId: number;
+  seats: string[];
+  totalAmount: number;
+  status: 'PENDING_PAYMENT' | 'CONFIRMED' | 'CANCELLED' | 'EXPIRED';
+  expiresAt: string;
 }

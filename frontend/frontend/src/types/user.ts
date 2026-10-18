@@ -1,10 +1,7 @@
 export interface User {
   id: number;
   accountId: string;
-  password: string;
   name: string;
-  phoneNumber: string;
-  address: string;
 }
 
 // types/auth.ts

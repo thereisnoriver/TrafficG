@@ -1,21 +1,34 @@
 // ShowDetail.tsx
-import { useEffect, useState } from 'react';
-import styles from './ShowDetail.module.css';
+import { useCallback, useEffect, useState } from 'react';
+import styles from './showDetail.module.css';
 import QueueModal from '../../components/modal/QueueModal';
 import Button from '../../components/common/Button';
-import { Show } from '../../types/show';
+import type { Show } from '../../types/show';
 import { fetchShow } from '../../api/show';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useUser } from '../../contexts/UserContext';
 
 const ShowDetail = () => {
   const {id} = useParams<{id:string}>();
+  const navigate = useNavigate();
+  const { user } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [show, setShow] = useState<Show | null>(null);
 
 
   const handleReserveClick = () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     setIsModalOpen(true);
   };
+
+  const handleAdmitted = useCallback((ticketId: string) => {
+    if (!id) return;
+    sessionStorage.setItem('queueTicket:' + id, ticketId);
+    navigate('/shows/' + id + '/seatSelector');
+  }, [id, navigate]);
 
    useEffect(() => {
     if (!id) return;
@@ -29,17 +42,18 @@ const ShowDetail = () => {
 
   return (
     <div className={styles.container}>
-      <img src={show.imageUrl} alt={show.name} className={styles.image} />
+      {show.imageUrl
+        ? <img src={show.imageUrl} alt={show.name} className={styles.image} />
+        : <div className={styles.image} style={{ display: 'grid', placeItems: 'center', minHeight: 170, background: '#dae9f5', color: '#24436b' }}>LIVE PERFORMANCE</div>}
       <h2 className={styles.title}>{show.name}</h2>
       <p className={styles.date}>상세정보:</p>
       <p className={styles.date}>{show.startDate} ~ {show.endDate}</p>
       <p className={styles.detail}>{show.detail}</p>
       <div className={styles.buttonMethods}>
 
-        <Button onClick={handleReserveClick}>예매하기</Button>
+        <Button onClick={handleReserveClick}>Join waiting room</Button>
           {isModalOpen && (
-            <QueueModal total={200} position={22} onClose={() => setIsModalOpen(false)} />
-
+            <QueueModal showId={show.id} onClose={() => setIsModalOpen(false)} onAdmitted={handleAdmitted} />
           )}
       </div>
     </div>

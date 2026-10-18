@@ -1,19 +1,31 @@
 import { Link } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
+import { logout } from '../../api/auth';
 import styles from './Header.module.css';
 
 const Header = () => {
-  const { user } = useUser();
-  console.log(user);
+  const { user, setUser } = useUser();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setUser(null);
+      window.location.assign('/');
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Logout failed');
+    }
+  };
   return (
     <header className={styles.header}>
-      <h1 className={styles.title}>비키니시티 예매 플랫폼</h1>
-       {user ? (
-        <p className={styles.welcome}>어서오세요!!!, {user.name}님!</p>
-        ) : (
-        <Link to="/login">로그인</Link>
-        )}
-      </header>
+      <Link to="/" className={styles.title}>TrafficG</Link>
+      <nav>
+        <Link to="/showList">Performances</Link>
+      </nav>
+      {user ? (
+        <div className={styles.welcome}>{user.name} <button onClick={() => void handleLogout()}>Sign out</button></div>
+      ) : (
+        <Link to="/login">Sign in</Link>
+      )}
+    </header>
 )};
 
 export default Header;

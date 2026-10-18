@@ -26,12 +26,12 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      signUp(form);
+      await signUp(form);
       alert('회원가입 성공! 로그인 페이지로 이동합니다.');
       navigate('/'); // 👉 이동
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(err.message);
+      alert(err instanceof Error ? err.message : 'Sign-up failed');
     }
   };
 
