@@ -1,18 +1,8 @@
-// api/reserve.ts
-import { ReserveRequest } from '../types/reserve';
+import type { ReserveRequest, Reservation, Seat } from '../types/reserve';
+import { api } from './client';
 
-export const reserveSeat = async (data:ReserveRequest) => {
- const res = await fetch('http://localhost:3001/reserve', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-  if (!res.ok) {
-    throw new Error('결제 요청 실패');
-  }
+export const fetchSeats = (showId: number): Promise<Seat[]> =>
+  api<Seat[]>('/api/shows/' + showId + '/seats');
 
-  const newUser = await res.json();
-  return newUser;
-};
-
-
+export const reserveSeat = (data: ReserveRequest): Promise<Reservation> =>
+  api<Reservation>('/api/reservations', { method: 'POST', body: JSON.stringify(data) });

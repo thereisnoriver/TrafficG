@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import styles from './ShowList.module.css';
+import styles from './showList.module.css';
 import { useEffect, useState } from 'react';
-import { Show } from '../../types/show';
+import type { Show } from '../../types/show';
 import { fetchShows } from '../../api/show';
 
 const ShowList = () => {
@@ -22,7 +22,9 @@ const ShowList = () => {
         {shows.map((show) => (
            <Link to={`/shows/${show.id}`} key={show.id} className={styles.cardLink}>
                 <div className={styles.card}>
-                    <img src={show.imageUrl} alt={show.name} className={styles.image} />
+                    {show.imageUrl
+                      ? <img src={show.imageUrl} alt={show.name} className={styles.image} />
+                      : <div className={styles.image} style={{ display: 'grid', placeItems: 'center', background: '#dae9f5', color: '#24436b' }}>LIVE PERFORMANCE</div>}
                     <div className={styles.info}>
                         <h3 className={styles.name}>{show.name}</h3>
                         <p className={styles.date}>{show.startDate} ~ {show.endDate}</p>

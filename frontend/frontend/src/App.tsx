@@ -1,7 +1,7 @@
 // src/App.tsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import Home from './pages/home';
+import Home from './pages/home';
 import Login from './pages/account/Login';
 import Signup from './pages/account/Signup';
 import ShowList from './pages/show/showList';
@@ -16,8 +16,8 @@ function App() {
     
     <BrowserRouter>
       <Routes>
-          <Route index element={<Home />} />
         <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
 
           <Route  path="login"  element={<Login />} />
           <Route path="signup" element={<Signup />} />

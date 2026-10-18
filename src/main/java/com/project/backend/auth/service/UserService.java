@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
 @Service
@@ -20,7 +22,7 @@ public class UserService{
     public User signUp(UserSignUpRequestDto userSignUpRequestDto) {
         // 1. 중복 ID 체크
         if (userRepository.findByAccountId(userSignUpRequestDto.getAccountId()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Account ID already exists");
         }
 
         String encodePassword = passwordEncoder.encode(userSignUpRequestDto.getPassword());
@@ -44,9 +46,22 @@ public class UserService{
 
         return  optionalUser.filter(user -> user.matchPassword(password, passwordEncoder))
                 .map(user -> UserLoginResponseDto.builder()
+                        .id(user.getId())
                         .accountId(user.getAccountId())
+                        .name(user.getName())
                         .build())
-                .orElse(null);
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED, "Invalid account ID or password"));
+    }
+
+    public UserLoginResponseDto currentUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session expired"));
+        return UserLoginResponseDto.builder()
+                .id(user.getId())
+                .accountId(user.getAccountId())
+                .name(user.getName())
+                .build();
     }
 
 }

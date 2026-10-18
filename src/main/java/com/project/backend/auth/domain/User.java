@@ -19,13 +19,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String accountId;
 
     @Setter
     @Column(nullable = false)
     private String password;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private Role role = Role.CUSTOMER;
@@ -45,10 +46,12 @@ public class User {
     @Column(nullable = false, length = 50)
     private String email;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 5)
     private EmailVerified emailVerified = EmailVerified.No;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 15)
     private Status status = Status.ACTIVE;

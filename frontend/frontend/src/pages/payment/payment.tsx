@@ -1,66 +1,50 @@
-// Payment.tsx
 import { useLocation } from 'react-router-dom';
-import styles from './Payment.module.css';
+import styles from './payment.module.css';
 import Button from '../../components/common/Button';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { paymentConfirm } from '../../api/payment';
-import { useUser } from '../../contexts/UserContext';
+import type { Reservation } from '../../types/reserve';
 
 const Payment = () => {
-  const { user } = useUser();
-  const { state } = useLocation();
-  const { showId, reservationId, seats, totalAmount } = state || {};
-  const [paymentMethod, setPaymentMethod] = useState('신용카드'); // 기본값
+  const { state } = useLocation() as { state: { reservation?: Reservation } | null };
+  const reservation = state?.reservation;
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-   const handleConfirm = async (e: React.FormEvent) => {
-      e.preventDefault(); // 새로고침 막기
-  
-      try {
-        await paymentConfirm({
-              userId: Number(user?.id),
-              reservation_id: Number(reservationId),
-              amount: totalAmount?.toLocaleString(),
-              status: "Success"
-            });
-        navigate('/payment/success'); // 👉 이동
-        // 여기에 로그인 성공 후 로직 (예: 페이지 이동, 상태 저장 등)
-      } catch (err: any) {
-        alert(err.message);
-      }
-    };
+  const handleConfirm = async () => {
+    if (!reservation) return;
+    setBusy(true);
+    try {
+      const updated = await paymentConfirm(reservation.id);
+      if (updated.status !== 'CONFIRMED') throw new Error('The hold expired before confirmation.');
+      navigate('/payment/success', { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to confirm reservation');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!reservation) {
+    return <p>There is no active reservation. Return to the <a href="/showList">show list</a>.</p>;
+  }
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>결제 정보 확인</h2>
+      <h2 className={styles.title}>Confirm demo reservation</h2>
       <div className={styles.infoBox}>
-        <p><strong>공연 ID:</strong> {showId}</p>
-        <p><strong>선택 좌석:</strong> {seats?.join(', ')}</p>
-        <p><strong>총 금액:</strong> {totalAmount?.toLocaleString()}원</p>
+        <p><strong>Show ID:</strong> {reservation.showId}</p>
+        <p><strong>Selected seats:</strong> {reservation.seats.join(', ')}</p>
+        <p><strong>Total:</strong> ₩{reservation.totalAmount.toLocaleString()}</p>
+        <p><strong>Hold expires:</strong> {new Date(reservation.expiresAt).toLocaleString()}</p>
       </div>
-
-      <div className={styles.paymentMethods}>
-        <p>결제수단</p>
-        {['신용카드', '카카오페이', '토스페이', '계좌이체'].map(method => (
-          <label
-            key={method}
-            className={`${styles.methodButton} ${paymentMethod === method ? styles.selected : ''}`}
-          >
-            <input
-              type="radio"
-              name="payment"
-              value={method}
-              checked={paymentMethod === method}
-              onChange={() => setPaymentMethod(method)}
-            />
-            {method}
-          </label>
-        ))}
-      </div>
-
-
+      <p>This is a simulated payment: no card details or funds are processed.</p>
+      {error && <p role="alert">{error}</p>}
       <div className={styles.confirmBox}>
-        <Button type="submit" onClick={handleConfirm}>결제 진행</Button>
+        <Button type="button" disabled={busy} onClick={handleConfirm}>
+          {busy ? 'Confirming...' : 'Simulate successful payment'}
+        </Button>
       </div>
     </div>
   );

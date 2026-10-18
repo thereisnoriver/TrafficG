@@ -1,33 +1,13 @@
-// src/api/auth.ts
-import { User } from '../types/user';
-import { LoginRequest } from '../types/user';
-import { SignUpRequest } from '../types/user';
-export const login = async ({ accountId, password }: LoginRequest): Promise<User> => {
-  const res = await fetch(`http://localhost:3001/users?accountId=${accountId}&password=${password}`);
-  const users = await res.json();
+import type { User, LoginRequest, SignUpRequest } from '../types/user';
+import { api } from './client';
 
-  if (users.length === 0) {
-    throw new Error('아이디 또는 비밀번호가 틀렸습니다.');
-  }
+export const login = (credentials: LoginRequest): Promise<User> =>
+  api<User>('/api/auth/login', { method: 'POST', body: JSON.stringify(credentials) });
 
-  // 로그인 성공 시 사용자 정보 반환
-  return users[0];
-};
+export const signUp = (data: SignUpRequest): Promise<string> =>
+  api<string>('/api/auth/signup', { method: 'POST', body: JSON.stringify(data) });
 
- 
-export const signUp = async (data: SignUpRequest) => {
-  const res = await fetch('http://localhost:3001/users', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
+export const logout = (): Promise<void> =>
+  api<void>('/api/auth/logout', { method: 'POST' });
 
-  if (!res.ok) {
-    throw new Error('회원가입 요청 실패');
-  }
-
-  const newUser = await res.json();
-  return newUser;
-};
+export const currentUser = (): Promise<User> => api<User>('/api/auth/me');

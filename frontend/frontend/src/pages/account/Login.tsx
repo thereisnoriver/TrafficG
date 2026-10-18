@@ -19,21 +19,21 @@ const Login = () => {
     try {
       const user = await login({ accountId, password });
       setUser(user);
-      navigate('/showlist'); // 👉 이동
+      navigate('/showList');
       // 여기에 로그인 성공 후 로직 (예: 페이지 이동, 상태 저장 등)
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Login failed');
     }
   };
 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>LOGIN</h2>
-      <form className={styles.form}>
+      <form className={styles.form} onSubmit={handleLogin}>
         <Input type="text" placeholder="ID" value={accountId}  onChange={(e) => setAccountId(e.target.value)} />
         <Input type="password" placeholder="PW" value={password} onChange={(e) => setPassword(e.target.value)} />
         <ButtonWrapper>
-          <Button type="submit" onClick={handleLogin} >LOGIN</Button>
+          <Button type="submit">LOGIN</Button>
           <LinkButton to="/signup">SignUp</LinkButton>
         </ButtonWrapper>
       </form>

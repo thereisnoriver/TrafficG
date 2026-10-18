@@ -5,21 +5,9 @@ const Layout = () => {
   return (
     <>
     <Header />
-    <main>
-      <div
-      
-      style={{
-        height: '100vh',
-        width: '100vw',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <main style={{ minHeight: 'calc(100vh - 80px)', width: '100%', margin: '0 auto', padding: '2rem' }}>
       <Outlet />
-    </div>
-
-    </main> 
+    </main>
     </> );
 };
 

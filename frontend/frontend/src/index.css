@@ -1,32 +1,18 @@
 :root {
   line-height: 1.5;
   font-weight: 400;
-  --font-krabby: 'KrabbyPatty';
-  --font-korean: 'yangjin';
+  --font-krabby: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-korean: Inter, ui-sans-serif, system-ui, sans-serif;
   --font-fallback: sans-serif;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: #18283c;
+  background-color: #f6f9fc;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-@font-face {
-  font-family: 'KrabbyPatty';
-  src: url("../src/assets/fonts/Krabby Patty.ttf") format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-    font-family: 'yangjin';
-    src: url('../src/assets/fonts/yangjin.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
 }
 
 a {
@@ -40,16 +26,10 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  align-items: center;
-  font-family: 'KrabbyPatty',  'yangjin', sans-serif;
-  background-image: url('/src/assets/background.svg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  background: linear-gradient(150deg, #f0f6ff, #ffffff 52%, #edf5f8);
 }
 
 h1 {
@@ -62,18 +42,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
 html, body, #root {
   height: 100%;
   margin: 0;

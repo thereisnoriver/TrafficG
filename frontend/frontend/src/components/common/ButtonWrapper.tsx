@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './buttonWrapper.module.css';
+import styles from './ButtonWrapper.module.css';
 
 interface ButtonWrapperProps {
   children: React.ReactNode;

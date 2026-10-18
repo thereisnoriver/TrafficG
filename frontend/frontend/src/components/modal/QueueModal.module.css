@@ -19,30 +19,3 @@
   text-align: center;
   position: relative;
 }
-
-.progressBarContainer {
-  position: relative;
-  height: 20px;
-  background: #dbeafe;
-  border-radius: 10px;
-  margin: 1rem 0;
-  overflow: hidden;
-}
-
-.progressBar {
-  height: 100%;
-  background: #60a5fa;
-  transition: width 0.3s ease;
-}
-
-.runner {
-  position: absolute;
-  top: -30px;
-  transform: translateX(-50%);
-  transition: left 0.3s ease;
-  width: 30px;
-  height: 30px;
-  background-image: url('/src/assets/mock/gary.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-}

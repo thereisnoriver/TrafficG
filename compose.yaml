@@ -1,0 +1,19 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: trafficg
+      MYSQL_USER: trafficg
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in your environment}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in your environment}
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - trafficg_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+volumes:
+  trafficg_mysql:
